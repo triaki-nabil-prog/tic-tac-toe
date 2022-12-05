@@ -20,61 +20,86 @@ let pubsub = {
     }
 };
 
-
-
-
-
-
 //Game flow control module
 let GameFlowControl = (function () {
-    pubsub.subscribe("GameData", render);
-    function render(data) {
-        console.log("render" + data); // getting game data from the gameboard
-    }
+
 })();
-
-
-
-
-
-
 
 // control display module of the gameBoard on the DOM
 let DisplayController = (function () {
+    let GameDisplayData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+    const spot = document.querySelectorAll(".spot");
 
-    pubsub.subscribe("GameData", render);
 
-    function render(data) {
-        console.log("render" + data); // getting game data from the gameboard
+
+    pubsub.subscribe("GameData", GetGameData);
+
+    function GetGameData(data) {
+        GameDisplayData = data;
+        DisplayBoard();
     }
 
+    function DisplayBoard() {
+        for (let i = 0; i < GameDisplayData.length; i++) {
+            spot[i].textContent = GameDisplayData[i];
+        }
+    }
 
 })();
-
-
-
-
 
 //GameBoard module
 let GameBoard = (function () {
-    let GameBoardData = ["X", "O", "O", "X", "O", "O", "X", "O", "O"];
-    pubsub.publish("GameData", GameBoardData);
 
+    let Game = {
+        BoardData: [" ", " ", " ", " ", " ", " ", " ", " ", " "],
+        playerChoice: "",
+        init: function () {
+            AddGlobalEventListener("click", "#O", PlayerMarkChoice);
+            AddGlobalEventListener("click", "#X", PlayerMarkChoice);
+            AddGlobalEventListener("click", ".spot", UpdateGameBoardData);
+            AddGlobalEventListener("click", "#reset", ResetData);
+        }
+    }
 
+    function AddGlobalEventListener(type, selector, callback) {
+        document.addEventListener(type, (e) => {
+            if (e.target.matches(selector)) {
+                callback(e);
+            }
+        });
+    }
+    function ResetData() {
+        Game.BoardData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+        UnlockPlayerChoice();
+        RefreshPublishedData();
+    }
+
+    function UnlockPlayerChoice() {
+        document.getElementById("X").removeAttribute("disabled");
+        document.getElementById("O").removeAttribute("disabled");
+    }
+
+    function lockPlayerChoice() {
+        document.getElementById("X").setAttribute("disabled", "");
+        document.getElementById("O").setAttribute("disabled", "");
+    }
+
+    function PlayerMarkChoice(e) {
+        Game.playerChoice = e.target.id;
+    }
+
+    function UpdateGameBoardData(e) {
+        Game.BoardData[e.target.id] = Game.playerChoice;
+
+        if (Game.playerChoice) {
+            lockPlayerChoice();
+            RefreshPublishedData();
+        }
+    }
+    function RefreshPublishedData() {
+        pubsub.publish("GameData", Game.BoardData);
+    }
+    Game.init();
 })();
 
 
-
-
-
-
-
-
-//player creation 
-let player = function (name) {
-    return { name, };
-}
-
-// a two player game
-PlayerOne = new player("player One");
-PlayerTwo = new player("player Tow");
