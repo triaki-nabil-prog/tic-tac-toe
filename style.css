@@ -46,7 +46,7 @@ h2 {
 }
 h1{
     margin-top: 30px;
-    margin-bottom: auto;
+    margin-bottom: 10vh;
 }
 
 .button button {
@@ -96,12 +96,12 @@ h1{
 
 .spot {
     border: 1px solid white;
-    font-size: 20vw;
+    font-size: 18vw;
     text-align: center;
 }
 
 @media only screen and (min-width: 700px) {
     .spot {
-        font-size: 9rem; 
+        font-size: 8rem; 
     }
 }
