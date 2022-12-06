@@ -59,8 +59,11 @@ let GameFlowControl = (function () {
 let DisplayGameBoardData = (function () {
     let GameDisplayData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
     const spot = document.querySelectorAll(".spot");
+    const win = document.querySelector(".winner");
+    pubsub.subscribe("ResetDisplay", Reset);
     pubsub.subscribe("GameData", DisplayBoard);
     pubsub.subscribe("Winner", WinnerDisplay);
+    
     function DisplayBoard(data) {
         GameDisplayData = data;
         for (let i = 0; i < GameDisplayData.length; i++) {
@@ -70,16 +73,21 @@ let DisplayGameBoardData = (function () {
     }
     function WinnerDisplay(data) {
         console.log(`winner is ${data}`);
-        const win = document.querySelector(".winner");
+        
 
-        if(data=="X"){
+        if (data == "X") {
             win.classList.add("winner-display");
-            win.textContent="Winner is player ONE";
+            win.textContent = "Winner is player ONE";
         }
-        else if (data=="O"){
+        else if (data == "O") {
             win.classList.add("winner-display");
-            win.textContent="Winner is player TWO";
+            win.textContent = "Winner is player TWO";
         }
+    }
+    function Reset(){
+        win.textContent = "";
+        win.classList.remove("winner-display");
+        
     }
 })();
 
@@ -105,16 +113,13 @@ let GetGameBoardData = (function () {
         });
     }
     function ResetData() {
-        const win = document.querySelector(".winner");
-        win.classList.remove("winner-display");
-        win.textContent="";
-
         Game.BoardData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
         Game.played = 0;
         Game.playerOneChoice = "";
         Game.playerTwoChoice = "";
         UnlockPlayerChoice();
         RefreshPublishedData();
+        pubsub.publish("ResetDisplay", "");
         const enable = document.querySelectorAll(".disabled-spot");
         enable.forEach(function (element) {
             element.classList.remove("disabled-spot");
