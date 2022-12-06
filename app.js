@@ -23,12 +23,7 @@ let pubsub = {
 //Game flow control module
 let GameFlowControl = (function () {
     let GameFlowData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-    pubsub.subscribe("GameData", GameFlow);
     pubsub.subscribe("DisplayData", isVictory);
-    function GameFlow(data) {
-        GameFlowData = data;
-        console.log(data);
-    }
     function isVictory(spot) {
         let combs = [
             [0, 1, 2],
@@ -63,7 +58,6 @@ let DisplayGameBoardData = (function () {
     pubsub.subscribe("ResetDisplay", Reset);
     pubsub.subscribe("GameData", DisplayBoard);
     pubsub.subscribe("Winner", WinnerDisplay);
-    
     function DisplayBoard(data) {
         GameDisplayData = data;
         for (let i = 0; i < GameDisplayData.length; i++) {
@@ -72,22 +66,31 @@ let DisplayGameBoardData = (function () {
         }
     }
     function WinnerDisplay(data) {
-        console.log(`winner is ${data}`);
-        
-
         if (data == "X") {
             win.classList.add("winner-display");
             win.textContent = "Winner is player ONE";
+            lockGameBoard();
         }
         else if (data == "O") {
             win.classList.add("winner-display");
             win.textContent = "Winner is player TWO";
+            lockGameBoard();
         }
+    }
+    function lockGameBoard(){
+        spot.forEach(function(element){
+            element.classList.add("disabled-spot");
+        });
+    }
+    function UnlockGameBoard(){
+        spot.forEach(function(element){
+            element.classList.remove("disabled-spot");
+        });
     }
     function Reset(){
         win.textContent = "";
         win.classList.remove("winner-display");
-        
+        UnlockGameBoard();
     }
 })();
 
