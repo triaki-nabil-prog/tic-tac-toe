@@ -9,14 +9,14 @@
     margin: 0;
     padding: 0;
     font: inherit;
-    color: white;
+    color: #edf2f4;
 }
 
 body {
     min-height: 100vh;
     font-family: "Finger Paint";
     font-size: 1.2rem;
-    background-color: black;
+    background-color: #2b2d42;
 }
 
 img,
@@ -28,7 +28,7 @@ video {
 }
 
 main {
-    border: 1px solid black;
+    border: 1px solid #2b2d42;
     margin: auto;
     max-width: 600px;
 
@@ -36,7 +36,7 @@ main {
     flex-direction: column;
     justify-content: center;
     min-height: 100vh;
-    background-color: black;
+    background-color: #2b2d42;
 }
 
 h1,
@@ -52,8 +52,8 @@ h1{
 .button button {
     flex: 1;
     max-width: 250px;
-    border: 5px solid white;
-    background-color: black;
+    border: 5px solid #edf2f4;
+    background-color: #2b2d42;
 }
 
 .button #X,
@@ -86,7 +86,7 @@ h1{
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background-color: #2b2d42;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -100,34 +100,33 @@ h1{
 }
 
 .content :nth-child(1){
-    border-right: 2px solid white;
-    border-bottom: 2px solid white;
+    border-right: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(2){
-    border-bottom: 2px solid white;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(3){
-    border-left: 2px solid white;
-    border-bottom: 2px solid white;
+    border-left: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(4){
-    border-right: 2px solid white;
+    border-right: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(5){
-    border-bottom: 2px solid white;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(6){
-    border-left: 2px solid white;
+    border-left: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
 }
 .content :nth-child(7){
-    border-right: 2px solid white;
-    border-top: 2px solid white;
-}
-.content :nth-child(8){
-    border-right: 2px solid white;
+    border-right: 4px solid #faa307;
+    
 }
 .content :nth-child(9){
-    border-top: 2px solid white;
+    border-left: 4px solid #faa307;
 }
 
 
