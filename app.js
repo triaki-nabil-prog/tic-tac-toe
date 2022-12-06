@@ -22,46 +22,81 @@ let pubsub = {
 
 //Game flow control module
 let GameFlowControl = (function () {
+    let GameFlowData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+    pubsub.subscribe("GameData", GameFlow);
+    pubsub.subscribe("DisplayData", isVictory);
+    function GameFlow(data) {
+        GameFlowData = data;
+        console.log(data);
+    }
+    function isVictory(spot) {
+        let combs = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+        for (let comb of combs) {
+            if (
+                spot[comb[0]].textContent == spot[comb[1]].textContent &&
+                spot[comb[1]].textContent == spot[comb[2]].textContent &&
+                spot[comb[0]].textContent != ''
+            ) {
+                if (spot[comb[2]].textContent == 'X' || spot[comb[2]].textContent == 'O') {
+                    pubsub.publish("Winner", spot[comb[2]].textContent);
+                }
 
-
+            }
+        }
+    }
 })();
 
 // control display module of the gameBoard on the DOM
-let DisplayController = (function () {
+let DisplayGameBoardData = (function () {
     let GameDisplayData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
     const spot = document.querySelectorAll(".spot");
-
-
-
-    pubsub.subscribe("GameData", GetGameData);
-
-    function GetGameData(data) {
+    pubsub.subscribe("GameData", DisplayBoard);
+    pubsub.subscribe("Winner", WinnerDisplay);
+    function DisplayBoard(data) {
         GameDisplayData = data;
-        DisplayBoard();
-    }
-
-    function DisplayBoard() {
         for (let i = 0; i < GameDisplayData.length; i++) {
             spot[i].textContent = GameDisplayData[i];
+            pubsub.publish("DisplayData", spot)
         }
     }
+    function WinnerDisplay(data) {
+        console.log(`winner is ${data}`);
+        const win = document.querySelector(".winner");
 
+        if(data=="X"){
+            win.classList.add("winner-display");
+            win.textContent="Winner is player ONE";
+        }
+        else if (data=="O"){
+            win.classList.add("winner-display");
+            win.textContent="Winner is player TWO";
+        }
+    }
 })();
 
 //GameBoard module
-let GameBoard = (function () {
-
+let GetGameBoardData = (function () {
     let Game = {
         BoardData: [" ", " ", " ", " ", " ", " ", " ", " ", " "],
-        playerChoice: "",
+        playerOneChoice: "",
+        playerTwoChoice: "",
+        played: 0,
         init: function () {
-            AddGlobalEventListener("click", "#O", PlayerMarkChoice);
-            AddGlobalEventListener("click", "#X", PlayerMarkChoice);
+            AddGlobalEventListener("click", "#O", PlayerTwoChoice);
+            AddGlobalEventListener("click", "#X", PlayerOneChoice);
             AddGlobalEventListener("click", ".spot", UpdateGameBoardData);
             AddGlobalEventListener("click", "#reset", ResetData);
         }
     }
-
     function AddGlobalEventListener(type, selector, callback) {
         document.addEventListener(type, (e) => {
             if (e.target.matches(selector)) {
@@ -70,32 +105,57 @@ let GameBoard = (function () {
         });
     }
     function ResetData() {
+        const win = document.querySelector(".winner");
+        win.classList.remove("winner-display");
+        win.textContent="";
+
         Game.BoardData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+        Game.played = 0;
+        Game.playerOneChoice = "";
+        Game.playerTwoChoice = "";
         UnlockPlayerChoice();
         RefreshPublishedData();
+        const enable = document.querySelectorAll(".disabled-spot");
+        enable.forEach(function (element) {
+            element.classList.remove("disabled-spot");
+        })
     }
-
     function UnlockPlayerChoice() {
-        document.getElementById("X").removeAttribute("disabled");
-        document.getElementById("O").removeAttribute("disabled");
+        const x = document.getElementById("X");
+        const o = document.getElementById("O");
+        x.removeAttribute("disabled")
+        o.removeAttribute("disabled");
+        x.textContent = "X";
+        o.textContent = "O";
     }
-
-    function lockPlayerChoice() {
+    function lockPlayerOneChoice() {
         document.getElementById("X").setAttribute("disabled", "");
+    }
+    function lockPlayerTwoChoice() {
         document.getElementById("O").setAttribute("disabled", "");
     }
-
-    function PlayerMarkChoice(e) {
-        Game.playerChoice = e.target.id;
+    function PlayerOneChoice(e) {
+        Game.playerOneChoice = e.target.id;
+        e.target.textContent = "Player One: X";
+        lockPlayerOneChoice();
     }
-
+    function PlayerTwoChoice(e) {
+        Game.playerTwoChoice = e.target.id;
+        e.target.textContent = "Player Two: O";
+        lockPlayerTwoChoice();
+    }
     function UpdateGameBoardData(e) {
-        Game.BoardData[e.target.id] = Game.playerChoice;
-
-        if (Game.playerChoice) {
-            lockPlayerChoice();
-            RefreshPublishedData();
+        if (Game.playerOneChoice && Game.played % 2 == 0) {
+            Game.BoardData[e.target.id] = Game.playerOneChoice;
+            Game.played++;
+            e.target.classList.add("disabled-spot");
         }
+        else if (Game.playerTwoChoice && !Game.played % 2 == 0) {
+            Game.BoardData[e.target.id] = Game.playerTwoChoice;
+            Game.played++;
+            e.target.classList.add("disabled-spot");
+        }
+        RefreshPublishedData();
     }
     function RefreshPublishedData() {
         pubsub.publish("GameData", Game.BoardData);

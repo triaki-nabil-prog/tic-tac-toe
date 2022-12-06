@@ -46,15 +46,14 @@ h2 {
 }
 h1{
     margin-top: 30px;
-    margin-bottom: 10vh;
+    margin-bottom: 20px;
 }
 
 .button button {
     flex: 1;
-    max-width: 140px;
+    max-width: 250px;
     border: 5px solid white;
     background-color: black;
-
 }
 
 .button #X,
@@ -91,6 +90,7 @@ h1{
     background-color: black;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
 
 }
 
@@ -100,8 +100,28 @@ h1{
     text-align: center;
 }
 
+.disabled-spot {
+    pointer-events: none;
+    }
+.winner-display{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    background-color: black;
+    font-size: 10vw;
+    text-align: center;
+    padding: 20px;
+    height: 70%;
+    width: 70%;
+    left: 15%;
+    top: 15%;
+}
+
 @media only screen and (min-width: 700px) {
     .spot {
         font-size: 8rem; 
+    }
+    .winner-display{
+        font-size: 4rem;
     }
 }
