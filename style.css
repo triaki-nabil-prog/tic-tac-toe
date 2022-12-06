@@ -73,7 +73,6 @@ h1{
 
 .Game-board {
     position: relative;
-    border: 5px solid white;
     margin: 5px;
 }
 
@@ -95,10 +94,42 @@ h1{
 }
 
 .spot {
-    border: 1px solid white;
+    
     font-size: 18vw;
     text-align: center;
 }
+
+.content :nth-child(1){
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+}
+.content :nth-child(2){
+    border-bottom: 2px solid white;
+}
+.content :nth-child(3){
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+}
+.content :nth-child(4){
+    border-right: 2px solid white;
+}
+.content :nth-child(5){
+    border-bottom: 2px solid white;
+}
+.content :nth-child(6){
+    border-left: 2px solid white;
+}
+.content :nth-child(7){
+    border-right: 2px solid white;
+    border-top: 2px solid white;
+}
+.content :nth-child(8){
+    border-right: 2px solid white;
+}
+.content :nth-child(9){
+    border-top: 2px solid white;
+}
+
 
 .disabled-spot {
     pointer-events: none;
