@@ -1,18 +1,23 @@
+
 // pubsub module
 let pubsub = {
+
     subscriptions: {
         GameData: []
     },
+
     subscribe: function (subscriptionName, fn) {
         this.subscriptions[subscriptionName] = this.subscriptions[subscriptionName] || [];
         this.subscriptions[subscriptionName].push(fn);
     },
+
     unsubscribe: function (subscriptionName, fn) {
         if (this.subscriptions[subscriptionName]) {
             const index = this.subscriptions.indexOf(fn);
             if (index !== -1) this.subscriptions[subscriptionName].splice(index, 1);
         }
     },
+
     publish: function (subscriptionName, data) {
         if (this.subscriptions[subscriptionName]) {
             this.subscriptions[subscriptionName].forEach(fn => { fn(data); });
@@ -22,8 +27,13 @@ let pubsub = {
 
 //Game flow control module
 let GameFlowControl = (function () {
-    let GameFlowData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-    pubsub.subscribe("DisplayData", isVictory);
+
+    let GameFlow = {
+        init: function () {
+            pubsub.subscribe("DisplayData", isVictory);
+        },
+    }
+
     function isVictory(spot) {
         let combs = [
             [0, 1, 2],
@@ -44,58 +54,72 @@ let GameFlowControl = (function () {
                 if (spot[comb[2]].textContent == 'X' || spot[comb[2]].textContent == 'O') {
                     pubsub.publish("Winner", spot[comb[2]].textContent);
                 }
-
             }
         }
     }
+
+    GameFlow.init();
 })();
 
 // control display module of the gameBoard on the DOM
 let DisplayGameBoardData = (function () {
-    let GameDisplayData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-    const spot = document.querySelectorAll(".spot");
-    const win = document.querySelector(".winner");
-    pubsub.subscribe("ResetDisplay", Reset);
-    pubsub.subscribe("GameData", DisplayBoard);
-    pubsub.subscribe("Winner", WinnerDisplay);
-    function DisplayBoard(data) {
-        GameDisplayData = data;
-        for (let i = 0; i < GameDisplayData.length; i++) {
-            spot[i].textContent = GameDisplayData[i];
-            pubsub.publish("DisplayData", spot)
+
+    let GameBoard = {
+        GameDisplayData: [" ", " ", " ", " ", " ", " ", " ", " ", " "],
+        spot: document.querySelectorAll(".spot"),
+        win: document.querySelector(".winner"),
+        init: function () {
+            pubsub.subscribe("ResetDisplay", Reset);
+            pubsub.subscribe("GameData", DisplayBoard);
+            pubsub.subscribe("Winner", WinnerDisplay);
         }
     }
+
+    function DisplayBoard(data) {
+        GameBoard.GameDisplayData = data;
+        for (let i = 0; i < GameBoard.GameDisplayData.length; i++) {
+            GameBoard.spot[i].textContent = GameBoard.GameDisplayData[i];
+            pubsub.publish("DisplayData", GameBoard.spot)
+        }
+    }
+
     function WinnerDisplay(data) {
         if (data == "X") {
-            win.classList.add("winner-display");
-            win.textContent = "Winner is player ONE";
+            GameBoard.win.classList.add("winner-display");
+            GameBoard.win.textContent = "Winner is player ONE";
             lockGameBoard();
         }
         else if (data == "O") {
-            win.classList.add("winner-display");
-            win.textContent = "Winner is player TWO";
+            GameBoard.win.classList.add("winner-display");
+            GameBoard.win.textContent = "Winner is player TWO";
             lockGameBoard();
         }
     }
-    function lockGameBoard(){
-        spot.forEach(function(element){
+
+    function lockGameBoard() {
+        GameBoard.spot.forEach(function (element) {
             element.classList.add("disabled-spot");
         });
     }
-    function UnlockGameBoard(){
-        spot.forEach(function(element){
+
+    function UnlockGameBoard() {
+        GameBoard.spot.forEach(function (element) {
             element.classList.remove("disabled-spot");
         });
     }
-    function Reset(){
-        win.textContent = "";
-        win.classList.remove("winner-display");
+
+    function Reset() {
+        GameBoard.win.textContent = "";
+        GameBoard.win.classList.remove("winner-display");
         UnlockGameBoard();
     }
+
+    GameBoard.init();
 })();
 
 //GameBoard module
 let GetGameBoardData = (function () {
+
     let Game = {
         BoardData: [" ", " ", " ", " ", " ", " ", " ", " ", " "],
         playerOneChoice: "",
@@ -108,6 +132,7 @@ let GetGameBoardData = (function () {
             AddGlobalEventListener("click", "#reset", ResetData);
         }
     }
+
     function AddGlobalEventListener(type, selector, callback) {
         document.addEventListener(type, (e) => {
             if (e.target.matches(selector)) {
@@ -115,6 +140,7 @@ let GetGameBoardData = (function () {
             }
         });
     }
+
     function ResetData() {
         Game.BoardData = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
         Game.played = 0;
@@ -128,6 +154,7 @@ let GetGameBoardData = (function () {
             element.classList.remove("disabled-spot");
         })
     }
+
     function UnlockPlayerChoice() {
         const x = document.getElementById("X");
         const o = document.getElementById("O");
@@ -136,22 +163,27 @@ let GetGameBoardData = (function () {
         x.textContent = "X";
         o.textContent = "O";
     }
+
     function lockPlayerOneChoice() {
         document.getElementById("X").setAttribute("disabled", "");
     }
+
     function lockPlayerTwoChoice() {
         document.getElementById("O").setAttribute("disabled", "");
     }
+
     function PlayerOneChoice(e) {
         Game.playerOneChoice = e.target.id;
         e.target.textContent = "Player One: X";
         lockPlayerOneChoice();
     }
+
     function PlayerTwoChoice(e) {
         Game.playerTwoChoice = e.target.id;
         e.target.textContent = "Player Two: O";
         lockPlayerTwoChoice();
     }
+
     function UpdateGameBoardData(e) {
         if (Game.playerOneChoice && Game.played % 2 == 0) {
             Game.BoardData[e.target.id] = Game.playerOneChoice;
@@ -165,9 +197,11 @@ let GetGameBoardData = (function () {
         }
         RefreshPublishedData();
     }
+
     function RefreshPublishedData() {
         pubsub.publish("GameData", Game.BoardData);
     }
+
     Game.init();
 })();
 

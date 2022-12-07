@@ -1,4 +1,3 @@
-/*My CSS default reset*/
 *,
 *::before,
 *::after {
@@ -31,7 +30,6 @@ main {
     border: 1px solid #2b2d42;
     margin: auto;
     max-width: 600px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -44,7 +42,8 @@ h2 {
     text-align: center;
     font-size: 2rem;
 }
-h1{
+
+h1 {
     margin-top: 30px;
     margin-bottom: 20px;
 }
@@ -60,9 +59,11 @@ h1{
 .button #O {
     font-size: 2rem;
 }
-.button #reset{
+
+.button #reset {
     margin-bottom: 30px;
 }
+
 .button {
     display: flex;
     margin: 20px;
@@ -94,46 +95,53 @@ h1{
 }
 
 .spot {
-    
+
     font-size: 18vw;
     text-align: center;
 }
 
-.content :nth-child(1){
+.content :nth-child(1) {
     border-right: 4px solid #faa307;
     border-bottom: 4px solid #faa307;
-}
-.content :nth-child(2){
-    border-bottom: 4px solid #faa307;
-}
-.content :nth-child(3){
-    border-left: 4px solid #faa307;
-    border-bottom: 4px solid #faa307;
-}
-.content :nth-child(4){
-    border-right: 4px solid #faa307;
-    border-bottom: 4px solid #faa307;
-}
-.content :nth-child(5){
-    border-bottom: 4px solid #faa307;
-}
-.content :nth-child(6){
-    border-left: 4px solid #faa307;
-    border-bottom: 4px solid #faa307;
-}
-.content :nth-child(7){
-    border-right: 4px solid #faa307;
-    
-}
-.content :nth-child(9){
-    border-left: 4px solid #faa307;
 }
 
+.content :nth-child(2) {
+    border-bottom: 4px solid #faa307;
+}
+
+.content :nth-child(3) {
+    border-left: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
+}
+
+.content :nth-child(4) {
+    border-right: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
+}
+
+.content :nth-child(5) {
+    border-bottom: 4px solid #faa307;
+}
+
+.content :nth-child(6) {
+    border-left: 4px solid #faa307;
+    border-bottom: 4px solid #faa307;
+}
+
+.content :nth-child(7) {
+    border-right: 4px solid #faa307;
+
+}
+
+.content :nth-child(9) {
+    border-left: 4px solid #faa307;
+}
 
 .disabled-spot {
     pointer-events: none;
-    }
-.winner-display{
+}
+
+.winner-display {
     display: flex;
     align-items: center;
     position: absolute;
@@ -149,9 +157,10 @@ h1{
 
 @media only screen and (min-width: 700px) {
     .spot {
-        font-size: 8rem; 
+        font-size: 8rem;
     }
-    .winner-display{
+
+    .winner-display {
         font-size: 4rem;
     }
 }
